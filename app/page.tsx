@@ -1,11 +1,13 @@
-import { Button } from "@/components/ui/button";
+import Image from "next/image";
+
+// tracking-tight 用来控制字间距
 
 export default function Home() {
   return (
     <>
-      <Button>Click on</Button>
+      <Image width={50} height={50} alt="logo" src={"/logo.png"} />
       <div>
-        <p className="font-bold text-rose-400">hellow world</p>
+        <p className="text-xl font-semibold tracking-tight">New youtube</p>
       </div>
     </>
   );
