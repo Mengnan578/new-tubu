@@ -10,3 +10,7 @@
 
 二： 组件
 `SidebarProvider`： 是侧边栏的上下文环境，通常需要包裹整个应用
+
+三： drizzle 常用命令
+`bunx drizzle-kit push:pg` 用来将数据库迁移到云数据库中
+`bunx drizzle-kit studio` 用来打开数据库可视化工具
