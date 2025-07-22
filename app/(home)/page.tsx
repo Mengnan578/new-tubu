@@ -15,9 +15,11 @@
 
 // tracking-tight 用来控制字间距
 
-import { trpc } from "@/trpc/server";
+import { HydrateClient, trpc } from "@/trpc/server";
 
 import { PageClient } from "./client";
+import { ErrorBoundary } from "react-error-boundary";
+import { Suspense } from "react";
 
 export default async function Home() {
   // const data = await trpc.hello({ text: 'wangfq de trpc' });
@@ -26,7 +28,13 @@ export default async function Home() {
   return (
     <>
       {/* Server component say : { data?.greeting } */}
-      <PageClient />
+      <HydrateClient>
+        <Suspense fallback={<div>Loading</div>}>
+          <ErrorBoundary fallback={<div>Error</div>}>
+            <PageClient />
+          </ErrorBoundary>
+        </Suspense>
+      </HydrateClient>
     </>
   );
 }
