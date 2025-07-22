@@ -35,3 +35,6 @@
 四： Clerk 常用命令
 `bunx clerk db create` 用来创建一个数据库
 `bunx clerk db connect` 用来连接一个数据库
+
+### trpc 介绍和说明
+介绍：trpc 

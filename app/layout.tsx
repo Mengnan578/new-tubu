@@ -3,6 +3,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Inder } from "next/font/google";
 import "./globals.css";
 
+import { TRPCProvider } from "@/trpc/client";
+
 const inter = Inder({
   subsets: ["latin"],
   weight: ["400"],
@@ -22,7 +24,9 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={inter.className}>{children}</body>
+        <body className={inter.className}>
+          <TRPCProvider>{children}</TRPCProvider>
+        </body>
       </html>
     </ClerkProvider>
   );
