@@ -22,3 +22,12 @@ export const users = pgTable('users', {
 // uniqueIndex('clerk_id_idx') 创建一个名为'clerk_id_idx'的唯一索引
 // .on(t.clerkId) 指定这个索引应用在clerkId字段上
 },(t)=> [uniqueIndex('clerk_id_idx').on(t.clerkId)])
+
+
+export const categories = pgTable('categories', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull().unique(),
+  description: text('description'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+},(t)=> [uniqueIndex('name_idx').on(t.name)])
