@@ -1,14 +1,25 @@
-import { initTRPC } from '@trpc/server';
-import superjson from 'superjson';
+import { initTRPC, TRPCError } from "@trpc/server";
+import superjson from "superjson";
+import { auth } from "@clerk/nextjs/server";
+import { cache } from "react";
+import { db } from "@/db";
+import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
-import { cache } from 'react';
+// 创建trpc上下文,此处返回的信息可以在trpc的路由中使用
 export const createTRPCContext = cache(async () => {
   /**
    * @see: https://trpc.io/docs/server/context
    */
-  return { userId: 'user_123' };
+  // 从clerk 中获取userid
+  const data = await auth();
+  return { clerkUserId: data.userId };
 });
-const t = initTRPC.create({
+// Awaited 是ts 4.5 引入的类型,用于获取Promise 解析后的类型
+export type Context = Awaited<ReturnType<typeof createTRPCContext>>;
+
+// 创建trpc实例,并指定上下文类型
+const t = initTRPC.context<Context>().create({
   /**
    * @see https://trpc.io/docs/server/data-transformers
    */
@@ -18,3 +29,34 @@ const t = initTRPC.create({
 export const createTRPCRouter = t.router;
 export const createCallerFactory = t.createCallerFactory;
 export const baseProcedure = t.procedure;
+export const protectedProcedure = t.procedure.use(async function isAuthed(opts) {
+   const { ctx } = opts;
+
+   console.log('wwww')
+
+  if (!ctx.clerkUserId) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: `没有clerkUserId:${ctx.clerkUserId}`,
+    });
+  }
+
+  const [user] = await db
+    .select()
+    .from(users)
+    .where(eq(users.clerkId, ctx.clerkUserId))
+    .limit(1);
+
+  if (!user) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "没有查到用户",
+    });
+  }
+  return opts.next({
+    ctx: {
+      ...ctx,
+      user,
+    },
+  });
+});

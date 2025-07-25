@@ -29,8 +29,8 @@ export default async function Home() {
     <>
       {/* Server component say : { data?.greeting } */}
       <HydrateClient>
-        <Suspense fallback={<div>Loading</div>}>
-          <ErrorBoundary fallback={<div>Error</div>}>
+        <Suspense fallback={<div>Loading。。。</div>}>
+          <ErrorBoundary fallback={<div>Error。。。</div>}>
             <PageClient />
           </ErrorBoundary>
         </Suspense>
