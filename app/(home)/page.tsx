@@ -1,40 +1,28 @@
-// 'use client'
-
-// import { trpc } from '@/trpc/client';
-
-// export default function Home() {
-
-//   const { data } = trpc.hello.useQuery({ text: 'hello' });
-
-//   return (
-//     <>
-//       Client component say : { data?.greeting }
-//     </>
-//   );
-// }
-
-// tracking-tight 用来控制字间距
-
 import { HydrateClient, trpc } from "@/trpc/server";
 
-import { PageClient } from "./client";
-import { ErrorBoundary } from "react-error-boundary";
-import { Suspense } from "react";
+import { HomeView } from "@/modules/home/ui/views/home-view";
 
-export default async function Home() {
-  // const data = await trpc.hello({ text: 'wangfq de trpc' });
+// 这行代码用于配置 Next.js 的页面渲染行为
+// force-dynamic 表示强制页面在每次请求时都重新渲染
+// 这样可以确保页面内容始终是最新的，但会牺牲一些性能
+export const dynamic = "force-dynamic";
 
-  void trpc.category.getMany.prefetch();
-  return (
-    <>
-      {/* Server component say : { data?.greeting } */}
-      <HydrateClient>
-        <Suspense fallback={<div>Loading。。。</div>}>
-          <ErrorBoundary fallback={<div>Error。。。</div>}>
-            <PageClient />
-          </ErrorBoundary>
-        </Suspense>
-      </HydrateClient>
-    </>
-  );
+interface PageProps {
+  searchParams: Promise<{
+    categoryId: string;
+  }>
 }
+
+const Page = async ({ searchParams }: PageProps) => {
+  const { categoryId} = await searchParams;
+  void trpc.category.getMany.prefetch();
+  
+  return (
+    // HydrateClient 用于在客户端渲染时提供 TRPC 客户端的上下文
+    <HydrateClient>
+      <HomeView categoryId={categoryId} />
+    </HydrateClient>
+  );
+};
+
+export default Page;
