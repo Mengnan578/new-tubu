@@ -24,7 +24,7 @@ import { Suspense } from "react";
 export default async function Home() {
   // const data = await trpc.hello({ text: 'wangfq de trpc' });
 
-  void trpc.hello.prefetch({ text: "wangfq de trpc" });
+  void trpc.category.getMany.prefetch();
   return (
     <>
       {/* Server component say : { data?.greeting } */}
