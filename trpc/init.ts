@@ -5,6 +5,7 @@ import { cache } from "react";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { ratelimit } from "@/lib/ratelimit";
 
 // 创建trpc上下文,此处返回的信息可以在trpc的路由中使用
 export const createTRPCContext = cache(async () => {
@@ -46,6 +47,15 @@ export const protectedProcedure = t.procedure.use(async function isAuthed(opts) 
     .from(users)
     .where(eq(users.clerkId, ctx.clerkUserId))
     .limit(1);
+
+
+  const { success } = await ratelimit.limit(ctx.clerkUserId);
+  if (!success) {
+    throw new TRPCError({
+      code: "TOO_MANY_REQUESTS",
+      message: "请求过于频繁",
+    });
+  }
 
   if (!user) {
     throw new TRPCError({
