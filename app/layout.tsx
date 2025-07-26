@@ -4,6 +4,7 @@ import { Inder } from "next/font/google";
 import "./globals.css";
 
 import { TRPCProvider } from "@/trpc/client";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inder({
   subsets: ["latin"],
@@ -25,7 +26,10 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={inter.className}>
-          <TRPCProvider>{children}</TRPCProvider>
+          <TRPCProvider>
+            <Toaster />
+            {children}
+          </TRPCProvider>
         </body>
       </html>
     </ClerkProvider>

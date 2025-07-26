@@ -13,7 +13,8 @@ export const studiorouter = createTRPCRouter({
             id: z.string().uuid(),
             updatedAt: z.date(),
           })
-          .nullable(),
+          .optional()
+          .nullable(),  // 默认值为 null
         limit: z.number().min(1).max(100),
       })
     )
